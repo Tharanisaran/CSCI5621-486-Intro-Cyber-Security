@@ -130,3 +130,9 @@ dmypy.json
 
 #Ignoring References Folder/Directory
 References/
+
+#Ignoring Python venv files
+Assignments/Assignment-1/bin
+Assignments/Assignment-1/include
+Assignments/Assignment-1/lib
+Assignments/Assignment-1/pyvenv.cfg
