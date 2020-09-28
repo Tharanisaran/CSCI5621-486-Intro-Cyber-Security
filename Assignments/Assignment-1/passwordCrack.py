@@ -1,9 +1,13 @@
 from itertools import product
 import hashlib
+import os 
+import multiprocessing
+
 class passwordcracker():
     def __init__(self):
         #print("I'm in class")
         self.substitutions={'s':['$'], 'a': ['4'], 'l': ['1'], 'e': ['3'], 't': ['7'], 'i': ['1'], 'o': ['0'], 'b': ['8'], 'g': ['9']}
+        #'4621_ctf{Intagliotype&6}'
         for key in self.substitutions.keys():
             if key not in self.substitutions[key]:
                 self.substitutions[key].append(key)
@@ -13,9 +17,9 @@ class passwordcracker():
         self.symbolCharacters = []
         self.symbolCharacters = self.symbolCharacters + [str(a)+str(b) for a,b in product(range(0,10),self.symbols)]
         self.symbolCharacters = self.symbolCharacters + [str(a)+str(b) for a,b in product(self.symbols,range(0,10))]
-        # print(self.symbolCharacters)
+        #print(self.symbolCharacters)
 
-        self.shaSalt = hex(2575198)
+        self.shaSalt = str(2575198)
     
     def getPossibilities(self,word):
         wordlist = []
@@ -32,10 +36,10 @@ class passwordcracker():
         allPossibilities = allPossibilities + wordPossibilities
         symbolPossibilities = [str(a)+str(b) for a,b in product(wordPossibilities,self.symbolCharacters)]
         allPossibilities = allPossibilities + symbolPossibilities
-        return allPossibilities
+        return set(allPossibilities)
 
     def getPasswordHash(self,password):
-        return hashlib.sha256(self.shaSalt.encode() + password.encode()).hexdigest()
+        return hashlib.sha256(password.encode()).hexdigest()
 
 def main():
     #print("I'm in main")
@@ -52,8 +56,13 @@ def main():
         possibilities=run.getPossibilities(word)
         # print(len(possibilities))
         for password in possibilities:
-            if run.getPasswordHash('4621_ctf{%s}'%(password)) in hashValues:
-                print(password)
+            hashValue = run.getPasswordHash('4621_ctf{%s}'%(password)+run.shaSalt)
+            if  hashValue in hashValues:
+                print(password + ',' + str(hashValue))
+    # samplePassword='4621_ctf{In7a9lio7ype&6}'
+    # exampleHash=run.getPasswordHash(samplePassword+run.shaSalt)
+    # print(exampleHash)
+    # print(exampleHash in hashValues)
     
 
     
