@@ -17,12 +17,12 @@ class passwordcracker():
         #Initializing th salt for appending in the hash function
         self.shaSalt = str(2575198)
     
-    def getWordPossibilities(self,d,c=[]):
-        if not d:
-            yield ''.join(c)
+    def getWordPossibilities(self,word,subs=[]):
+        if not word:
+            yield ''.join(subs)
         else:
-            for i in [d[0], *self.substitutions.get(d[0], [])]:
-                yield from self.getWordPossibilities(d[1:], c+[i])
+            for i in [word[0], *self.substitutions.get(word[0], [])]:
+                yield from self.getWordPossibilities(word[1:], subs+[i])
     
     def getPossibilities(self,word):
         wordlist = []
@@ -37,12 +37,7 @@ class passwordcracker():
         allPossibilities = allPossibilities + wordPossibilities
         # print(len(allPossibilities))
         #Finding all the combination of digit and symbol to append in the word
-        try:
-            symbolPossibilities = [str(a)+str(b) for a,b in product(wordPossibilities,self.symbolCharacters)]
-        except MemoryError as e:
-            print(e)
-            print(word)
-            pass
+        symbolPossibilities = [str(a)+str(b) for a,b in product(wordPossibilities,self.symbolCharacters)]
         # print(len(symbolPossibilities))
         allPossibilities = allPossibilities + symbolPossibilities
         # print(len(allPossibilities))
@@ -54,7 +49,7 @@ class passwordcracker():
 
 def main():
     #Reading the dictionary wordlist
-    baseWords=open("words_all.txt", "r",encoding='utf-8').readlines()
+    baseWords=open("words.txt", "r",encoding='utf-8').readlines()
     #Generating the list of words with length more than or equal to 10 characters
     morethan10 = [word.rstrip('\n').lower() for word in baseWords if len(word) > 10]
 
@@ -66,7 +61,11 @@ def main():
     cracked = 0
     #Running the code for only 14 cracked passwords as of now
     for word in morethan10:
-        possibilities=run.getPossibilities(word)
+        try:
+            possibilities=run.getPossibilities(word)
+        except:
+            print('%s has errored out'%(word))
+            break
         # print("Word-%d:Possibilities%d"%(en,len(possibilities)))
         #Comparing the generated hash values with given hash values
         for password in possibilities:
