@@ -1,4 +1,5 @@
 from itertools import product
+from itertools import combinations
 import hashlib
 import os 
 
@@ -10,6 +11,8 @@ class passwordcracker():
             if key not in self.substitutions[key]:
                 self.substitutions[key].append(key)
         #initializing the symbols and digits for appending
+        self.productSubstitutions = [list(zip(self.substitutions.keys(),character)) for character in product(*self.substitutions.values())]
+        # print(self.productSubstitutions)
         self.symbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '{', '}', '|', ':', ';', '[', ']', '?', '>', '<']
         self.symbolCharacters = []
         self.symbolCharacters = self.symbolCharacters + [str(a)+str(b) for a,b in product(range(0,10),self.symbols)]
@@ -25,11 +28,13 @@ class passwordcracker():
         wordPossibilities = []
         #Finding all the combinations of substitutions for each word
         for nword in wordlist:
-            for substitute in [zip(self.substitutions.keys(),character) for character in product(*self.substitutions.values())]:
+            for substitute in self.productSubstitutions:
                 temp=nword
                 for replacement in substitute:
-                    temp=temp.replace(*replacement)
+                    temp=temp.replace(*replacement,1)
                 wordPossibilities.append(temp)
+                # if temp[0].islower() and temp[0].isalpha():
+                #     wordPossibilities.append(temp.capitalize())
         allPossibilities = allPossibilities + wordPossibilities
         #Finding all the combination of digit and symbol to append in the word
         symbolPossibilities = [str(a)+str(b) for a,b in product(wordPossibilities,self.symbolCharacters)]
@@ -50,9 +55,16 @@ def main():
     hashValues=[value.rstrip('\n') for value in hashFile ]
     run = passwordcracker()
     cracked = 0
-    #Running the code for only 14 cracked passwords as of now
-    for word in morethan10[:25]:
+    print(len(morethan10))
+    #Generating hash values 
+    for word in morethan10[:1]:
         possibilities=run.getPossibilities(word)
+        newlist = []
+        for al in possibilities: 
+            if len(al) == len(word):
+                newlist.append(al)
+
+        print(sorted(newlist))
         #Comparing the generated hash values with given hash values
         for password in possibilities:
             hashValue = run.getPasswordHash('4621_ctf{%s}'%(password)+run.shaSalt)
