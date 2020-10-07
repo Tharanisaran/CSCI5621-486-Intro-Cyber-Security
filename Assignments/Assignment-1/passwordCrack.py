@@ -49,10 +49,9 @@ class passwordcracker():
 
 def main():
     #Reading the dictionary wordlist
-    baseWords=open("words.txt", "r",encoding='utf-8').readlines()
+    baseWords=open("words_all.txt", "r",encoding='utf-8').readlines()
     #Generating the list of words with length more than or equal to 10 characters
     morethan10 = [word.rstrip('\n').lower() for word in baseWords if len(word) > 10]
-
     print(len(morethan10))
     #Opening the given hash values to crack
     hashFile=open("hash_2575198.txt","r").readlines()
@@ -61,20 +60,22 @@ def main():
     cracked = 0
     #Running the code for only 14 cracked passwords as of now
     for word in morethan10:
+        # print(word)
         try:
             possibilities=run.getPossibilities(word)
+            # print("Word-%d:Possibilities%d"%(en,len(possibilities)))
+            #Comparing the generated hash values with given hash values
+            for password in possibilities:
+                hashValue = run.getPasswordHash('4621_ctf{%s}'%(password)+run.shaSalt)
+                if  hashValue in hashValues:
+                    cracked += 1
+                    #If it matches,it prints
+                    print(str(cracked) + '-' + str('Word:') + str(word) + '-' + '4621_ctf{%s}'%(password) + ',' + str(hashValue), flush=True)
+                    break
         except:
             print('%s has errored out'%(word))
-            break
-        # print("Word-%d:Possibilities%d"%(en,len(possibilities)))
-        #Comparing the generated hash values with given hash values
-        for password in possibilities:
-            hashValue = run.getPasswordHash('4621_ctf{%s}'%(password)+run.shaSalt)
-            if  hashValue in hashValues:
-                cracked += 1
-                #If it matches,it prints
-                print(str(cracked) + '-' + '4621_ctf{%s}'%(password) + ',' + str(hashValue), flush=True)
-                break
+            continue
+       
     
 if __name__ == "__main__":
     main()
