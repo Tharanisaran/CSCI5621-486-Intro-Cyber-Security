@@ -16,7 +16,7 @@ class passwordcracker():
         self.symbolCharacters = self.symbolCharacters + [str(a)+str(b) for a,b in product(self.symbols,range(0,10))]
         #Initializing th salt for appending in the hash function
         self.shaSalt = str(2575198)
-    
+    #Getting the possibile combinations of word substitutions
     def getWordPossibilities(self,word,subs=[]):
         if not word:
             yield ''.join(subs)
@@ -49,6 +49,10 @@ class passwordcracker():
 
 def main():
     #Reading the dictionary wordlist
+    """
+    This word list is downloaded from https://github.com/dwyl/english-words
+    Also I moved the cracked passwords to the top of the file for run the code fast
+    """
     baseWords=open("words_all.txt", "r",encoding='utf-8').readlines()
     #Generating the list of words with length more than or equal to 10 characters
     morethan10 = [word.rstrip('\n').lower() for word in baseWords if len(word) > 10]
@@ -58,12 +62,11 @@ def main():
     hashValues=[value.rstrip('\n') for value in hashFile ]
     run = passwordcracker()
     cracked = 0
-    #Running the code for only 14 cracked passwords as of now
-    for word in morethan10:
-        # print(word)
+    #Going through each word and checking the hash values
+    #The code runs for cracked Passwords, If you need to run for other words. Remove this loop
+    for word in morethan10[:101]:
         try:
             possibilities=run.getPossibilities(word)
-            # print("Word-%d:Possibilities%d"%(en,len(possibilities)))
             #Comparing the generated hash values with given hash values
             for password in possibilities:
                 hashValue = run.getPasswordHash('4621_ctf{%s}'%(password)+run.shaSalt)
