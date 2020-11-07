@@ -43,5 +43,5 @@ for sB in sixteenBitpairs:
     # result = result + cipher_dict[sB]
     resultTextPairs.append(cipher_dict[sB])
 
-print([[s,r] for s,r in zip(sixteenBitpairs,resultTextPairs)])
+#print([[s,r] for s,r in zip(sixteenBitpairs,resultTextPairs)])
 print(''.join(resultTextPairs))
