@@ -2,8 +2,8 @@ import string
 #getting all possible ASCII characters
 plain_text=string.printable.rstrip()
 #getting the cipher text and substitutions
-cipher_text=r'FI(:|tm}4?17a=+WcWoam1|5#~dS:2p9*i/x \uqx}oKB({J{8VU/<'
-substitution='s:(/F!IM>gaot+1}{U0 "cp=W7r?%m_[TBKSG@8L.nXvy-,#C&\'hDVexbj2wlzf6~9PR;*uY]E`kNZ$q^5d)AOHi|J4\<3'
+cipher_text=r'~[4M(&?}k<>,|E?_X`X^(2eEg)2ob}VoqLj#v(4[l\hX&Q]{2|TC'
+substitution='mM4=~a[*.U{s&v`} ,_@;Xo>|D5hE?<q\']^T0Zx1)+L%due7Fn/:\WS2OBrfN6Q$j-gHtPyJRp8IAGclV#9zw3Yi(bk!C"'
 #print(plain_text)
 # print(len(plain_text),len(substitution))
 #creating a dictionary to store the mappings of plain text and substitutions
@@ -18,4 +18,4 @@ for letter in cipher_text:
     flag = flag + cipher_dict[letter]
 #Printing the flag
 print(flag)
-
+print(plain_text)
